@@ -16,7 +16,7 @@ function displayItems(products) {
     for (let product of products) {
         productsItem.innerHTML += `
         <a href="./product.html?id=${product._id}">
-            <article></article>article>
+            <article>
               <img src="${product.imageUrl}" alt="${product.altTxt}">
               <h3 class="productName">${product.name}</h3>
               <p class="productDescription">${product.description}</p>
