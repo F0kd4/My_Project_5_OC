@@ -66,113 +66,25 @@ addToCartBtn.addEventListener("click", () => {
 
     let itemsInCart = JSON.parse(localStorage.getItem("cart"));
 
-    // const checkSameItem = () => {
-    //     itemsInCart.forEach(element => {
-    //         ((element.id == productObject.id) && (element.color == productObject.color))
-    //         element.quantity = productObject.quantity + element.quantity;
-    //     }
-    //     });
-    // };
-
     if (itemsInCart) {
-        if (itemsInCart.forEach(element => {
-            ((element.id == productObject.id) && (element.color == productObject.color))
-        })) {
-            element.quantity = element.quantity + productObject.quantity;
-            return itemsInCart;
-        } else {
+        let modifiedCart = false;
+        itemsInCart.forEach(element => {
+            if ((element.id == productObject.id) && (element.color == productObject.color)) {
+                element.quantity = element.quantity + productObject.quantity;
+                modifiedCart = true;
+            }
+        })
+
+        if (!modifiedCart) {
             itemsInCart.push(productObject);
-            localStorage.setItem("cart", JSON.stringify(itemsInCart));
         };
 
 
     } else {
         itemsInCart = [];
         itemsInCart.push(productObject);
-        localStorage.setItem("cart", JSON.stringify(itemsInCart));
     };
 
-    console.log(itemsInCart);
-
-
-
-
-
-
-
-
-
-
-
-    // let inCartItems = JSON.parse(localStorage.getItem("product"))
-    // // s'il y a un produit dans le local storage  //
-    // if (inCartItems) {
-    //     inCartItems.push(productObject)
-    //     localStorage.setItem("product", JSON.stringify(inCartItems))
-    // }
-    // // s'il n'y a pas un produit dans le local storage  //
-    // else {
-    //     inCartItems = []
-    //     inCartItems.push(productObject)
-    //     console.log(inCartItems)
-    //     localStorage.setItem("product", JSON.stringify(inCartItems))
-    // }
-    //stockage des caractéristiques dans un tableau
-    // let itemArray = [productObject];
-
-
-    //Getion du localStorage
-    // localStorage.setItem('cartItem', JSON.stringify(itemArray));
-
-
-    //  function getCart() {
-    //      let cart = localStorage.getItem("cartItem");
-    //      if (cart != null) {
-
-    //      } else {
-
-    //      }
-    //     return JSON.parse(cart);
-    //  }
-
-    // function addCart(item) {
-    //     let cart = getCart();
-    //     let foundItem = cart.find((p => p.id == item.id) && (p => p.color == item.color));
-    //     if (foundItem != undefined) {
-    //         item.quantity = item.quantity + foundItem.quantity;
-    //     } else {
-    //         cart.push(item);
-    //     }
-    //     cart.push(item);
-    //     saveCart(itemArray);
-    // }
-
-
-
-
-    // function getCart() {
-    //     let cart = localStorage.getItem("cartItem");
-    //     if (cart == null) {
-    //         return [];
-    //     } else {
-    //         return JSON.parse(cart);
-    //     }
-    // }
-
-    // function addCart(product) {
-    //     let cart = getCart();
-    //     let foundProduct = cart.find(p => p.id == product.id);
-    //     if (foundProduct != undefined) {
-    //         foundProduct.quantity +=;
-    //     } else {
-    //         cart.push(product);
-    //     }
-    //     saveCart(cart);
-    // }
-
-
-    //if (name dans le panier === name && couleur dans le panier === color alors qty +=)
-
+    localStorage.setItem("cart", JSON.stringify(itemsInCart));
 
 });
-
