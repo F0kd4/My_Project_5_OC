@@ -6,6 +6,9 @@ fetch("http://localhost:3000/api/products")
     .then(function (products) {
         displayItems(products);
     })
+    .catch(function (error) {
+        console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
+    });
 
 
 
