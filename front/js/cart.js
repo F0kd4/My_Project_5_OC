@@ -1,5 +1,8 @@
+//---> Récupération des données dans le local storage
 let cart = JSON.parse(localStorage.getItem("cart"));
 
+//---> GET de l'API de chaque produit contenu dans le panier par son ID
+//---> & appel de la fonction d'affichage des produits
 cart.forEach(element => {
     fetch(`http://localhost:3000/api/products/${element.id}`)
         .then(function (res) {
@@ -14,7 +17,7 @@ cart.forEach(element => {
 }
     
 function displayProduct(product) {
-    let 
-}
+        let
+    }
 
 console.log(cart);

@@ -1,4 +1,4 @@
-//GET de l'API et appel de la function d'affichage
+//---> GET de l'API et appel de la fonction d'affichage des produits
 fetch("http://localhost:3000/api/products")
     .then(function (res) {
         return res.json();
@@ -12,9 +12,10 @@ fetch("http://localhost:3000/api/products")
 
 
 
-//Fonction spécifique à l'affichage des produits
+//---> Fonction spécifique à l'affichage des produits
 function displayItems(products) {
     const productsItem = document.getElementById("items");
+
 
     for (let product of products) {
         productsItem.innerHTML += `
