@@ -5,13 +5,15 @@ console.log(cart);
 //---> & appel de la fonction d'affichage des produits
 cart.forEach(element => {
     console.log("IDs :", element.id);
-    console.log("color :", element.color);
+    console.log("color1 :", element.color);
     fetch(`http://localhost:3000/api/products/${element.id}`)
         .then(function (res) {
             return res.json();
         })
         .then(function (product) {
-            displayProduct(product);
+
+            console.log("color2 :", element.color);
+            displayProduct(product, element);
         })
         .catch(function (error) {
             console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
@@ -19,50 +21,71 @@ cart.forEach(element => {
 });
 
 //---> fonction relative à l'intégration HTML spécifique à chaque produit du panier
-function displayProduct(product) {
+function displayProduct(product, element) {
+
     let articleProduct = document.createElement("article");
     articleProduct.setAttribute("class", "cart__item");
     articleProduct.setAttribute("data-id", product._id);
     articleProduct.setAttribute("data-color", product.colors);
     document.getElementById("cart__items").appendChild(articleProduct);
-    let div1 = document.createElement("div");
-    div1.setAttribute("class", "cart__item__img");
-    articleProduct.appendChild(div1);
+
+    let divImg = document.createElement("div");
+    divImg.setAttribute("class", "cart__item__img");
+    articleProduct.appendChild(divImg);
+
     let img = document.createElement("img");
     img.setAttribute("src", product.imageUrl);
     img.setAttribute("alt", product.altTxt);
-    div1.appendChild(img);
-    let div2 = document.createElement("div");
-    div2.setAttribute("class", "cart__item__content");
-    articleProduct.appendChild(div2);
-    let div2_1 = document.createElement("div");
-    div2_1.setAttribute("class", "cart__item__content__description");
-    div2.appendChild(div2_1);
-    div2_1.innerHTML += `
-        <h2>${product.name}</h2>
-        <p>vert à modifier/!</p>
-        <p>${product.price} €</p>`;
-    let div2_2 = document.createElement("div");
-    div2_2.setAttribute("class", "cart__item__content__settings");
-    div2.appendChild(div2_2);
-    let div2_2_1 = document.createElement("div");
-    div2_2_1.setAttribute("class", "cart__item__content__settings__quantity");
-    div2_2.appendChild(div2_2_1);
-    div2_2_1.innerHTML += `
-        <p>Qté : </p>`;
+    divImg.appendChild(img);
+
+    let divContent = document.createElement("div");
+    divContent.setAttribute("class", "cart__item__content");
+    articleProduct.appendChild(divContent);
+
+    let divContentDescr = document.createElement("div");
+    divContentDescr.setAttribute("class", "cart__item__content__description");
+    divContent.appendChild(divContentDescr);
+
+    let hNameProduct = document.createElement("h2");
+    divContentDescr.appendChild(hNameProduct);
+    hNameProduct.textContent = `${product.name}`;
+
+    let pElementColor = document.createElement("p");
+    divContentDescr.appendChild(pElementColor);
+    pElementColor.textContent = `${element.color}`;
+
+    let pPriceProduct = document.createElement("p");
+    divContentDescr.appendChild(pPriceProduct);
+    pPriceProduct.textContent = `${product.price} €`;
+
+    let divContentSett = document.createElement("div");
+    divContentSett.setAttribute("class", "cart__item__content__settings");
+    divContent.appendChild(divContentSett);
+
+    let divContentSettQty = document.createElement("div");
+    divContentSettQty.setAttribute("class", "cart__item__content__settings__quantity");
+    divContentSett.appendChild(divContentSettQty);
+
+    let pContentSettQty = document.createElement("p");
+    divContentSettQty.appendChild(pContentSettQty);
+    pContentSettQty.textContent = "Qté : ";
+
     let inputQuantity = document.createElement("input");
     inputQuantity.setAttribute("type", "number");
     inputQuantity.setAttribute("class", "itemQuantity");
     inputQuantity.setAttribute("name", "itemQuantity");
     inputQuantity.setAttribute("min", 1);
     inputQuantity.setAttribute("max", 100);
-    inputQuantity.setAttribute("value", 42);//>>>>MODIF/!\!!
-    div2_2_1.appendChild(inputQuantity);
-    let div2_2_2 = document.createElement("div");
-    div2_2_2.setAttribute("class", "cart__item__content__settings__delete");
-    div2_2.appendChild(div2_2_2);
-    div2_2_2.innerHTML += `
-        <p class="deleteItem">Supprimer</p>`;
+    inputQuantity.setAttribute("value", element.quantity);
+    divContentSettQty.appendChild(inputQuantity);
+
+    let divContentSettDel = document.createElement("div");
+    divContentSettDel.setAttribute("class", "cart__item__content__settings__delete");
+    divContentSett.appendChild(divContentSettDel);
+
+    let pContentSettDel = document.createElement("p");
+    divContentSettDel.appendChild(pContentSettDel);
+    pContentSettDel.textContent = "Supprimer";
 };
 
 
