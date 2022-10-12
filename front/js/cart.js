@@ -1,18 +1,14 @@
 //---> Récupération des données dans le local storage
 let cart = JSON.parse(localStorage.getItem("cart"));
-console.log(cart);
+
 //---> GET de l'API de chaque produit contenu dans le panier par son ID
 //---> & appel de la fonction d'affichage des produits
 cart.forEach(element => {
-    console.log("IDs :", element.id);
-    console.log("color1 :", element.color);
     fetch(`http://localhost:3000/api/products/${element.id}`)
         .then(function (res) {
             return res.json();
         })
         .then(function (product) {
-
-            console.log("color2 :", element.color);
             displayProduct(product, element);
         })
         .catch(function (error) {
@@ -26,7 +22,7 @@ function displayProduct(product, element) {
     let articleProduct = document.createElement("article");
     articleProduct.setAttribute("class", "cart__item");
     articleProduct.setAttribute("data-id", product._id);
-    articleProduct.setAttribute("data-color", product.colors);
+    articleProduct.setAttribute("data-color", element.color);
     document.getElementById("cart__items").appendChild(articleProduct);
 
     let divImg = document.createElement("div");
@@ -72,12 +68,16 @@ function displayProduct(product, element) {
 
     let inputQuantity = document.createElement("input");
     inputQuantity.setAttribute("type", "number");
+    inputQuantity.setAttribute("id", "itemQuantity");
     inputQuantity.setAttribute("class", "itemQuantity");
     inputQuantity.setAttribute("name", "itemQuantity");
     inputQuantity.setAttribute("min", 1);
     inputQuantity.setAttribute("max", 100);
     inputQuantity.setAttribute("value", element.quantity);
     divContentSettQty.appendChild(inputQuantity);
+    inputQuantity.addEventListener("change", event => {
+        changeQty(event);
+    });
 
     let divContentSettDel = document.createElement("div");
     divContentSettDel.setAttribute("class", "cart__item__content__settings__delete");
@@ -89,3 +89,23 @@ function displayProduct(product, element) {
 };
 
 
+
+function changeQty(event) {
+    const inputItem = event.target;
+    const articleItem = inputItem.closest('article');
+
+    const idItem = articleItem.getAttribute("data-id");
+    const colorItem = articleItem.getAttribute("data-color");
+    const newValue = event.target.value;
+
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    cart.forEach(element => {
+        if ((element.id == idItem) && (element.color == colorItem)) {
+            element.quantity = newValue;
+        }
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    window.location.reload();
+};
