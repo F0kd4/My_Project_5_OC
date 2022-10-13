@@ -75,6 +75,7 @@ function displayProduct(product, element) {
     inputQuantity.setAttribute("max", 100);
     inputQuantity.setAttribute("value", element.quantity);
     divContentSettQty.appendChild(inputQuantity);
+    //---> Ecoute de l'évènement "change" dans l'input relatif aux quantités
     inputQuantity.addEventListener("change", event => {
         changeQty(event);
     });
@@ -83,13 +84,24 @@ function displayProduct(product, element) {
     divContentSettDel.setAttribute("class", "cart__item__content__settings__delete");
     divContentSett.appendChild(divContentSettDel);
 
+
     let pContentSettDel = document.createElement("p");
     divContentSettDel.appendChild(pContentSettDel);
     pContentSettDel.textContent = "Supprimer";
+    //---> Ecoute de l'évènement "clic" sur "Supprimer"
+    pContentSettDel.addEventListener("click", event => {
+        deleteItem(event);
+    });
+
+    document.getElementById("totalQuantity").innerHTML = totalQty();
+
+    console.log(${ product.price });
+
+    // document.getElementById("totalPrice").innerHTML = totalPrice(${ product.price });
 };
 
 
-
+//---> Fonction relative aux changements de quantité des items
 function changeQty(event) {
     const inputItem = event.target;
     const articleItem = inputItem.closest('article');
@@ -109,3 +121,46 @@ function changeQty(event) {
 
     window.location.reload();
 };
+
+
+//---> Fonction relative à la suppression des items
+function deleteItem(event) {
+    const clickToDel = event.target;
+    const articleItemToDel = clickToDel.closest('article');
+
+    const idItemToDel = articleItemToDel.getAttribute("data-id");
+    const colorItemToDel = articleItemToDel.getAttribute("data-color");
+
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    cart.forEach(element => {
+
+        if ((element.id == idItemToDel) && (element.color == colorItemToDel)) {
+            let index = cart.indexOf(element);
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+    });
+
+
+
+    window.location.reload();
+};
+
+//---> Fonction relative au calcul du total de la quantité d'articles dans le panier
+function totalQty() {
+    let totalQuantity = 0;
+    cart.forEach(element => {
+        let Qty = parseInt(element.quantity);
+        totalQuantity += Qty;
+    });
+    return totalQuantity;
+};
+
+// function totalPrice(${ product.price }) {
+
+// }
+
+
+
+
+
