@@ -1,6 +1,8 @@
 //---> Récupération des données dans le local storage
 let cart = JSON.parse(localStorage.getItem("cart"));
 
+
+
 //---> GET de l'API de chaque produit contenu dans le panier par son ID
 //---> & appel de la fonction d'affichage des produits
 cart.forEach(element => {
@@ -77,7 +79,12 @@ function displayProduct(product, element) {
     divContentSettQty.appendChild(inputQuantity);
     //---> Ecoute de l'évènement "change" dans l'input relatif aux quantités
     inputQuantity.addEventListener("change", event => {
-        changeQty(event);
+        if ((event.target.value < 1) || (event.target.value > 100)) {
+            alert('La quantité doit être comprise entre 1 et 100.');
+            return;
+        } else {
+            changeQty(event);
+        }
     });
 
     let divContentSettDel = document.createElement("div");
@@ -95,9 +102,7 @@ function displayProduct(product, element) {
 
     document.getElementById("totalQuantity").innerHTML = totalQty();
 
-    console.log(${ product.price });
-
-    // document.getElementById("totalPrice").innerHTML = totalPrice(${ product.price });
+    document.getElementById("totalPrice").innerHTML = totalPrice(product, element);
 };
 
 
@@ -109,7 +114,6 @@ function changeQty(event) {
     const idItem = articleItem.getAttribute("data-id");
     const colorItem = articleItem.getAttribute("data-color");
     const newValue = event.target.value;
-
     let cart = JSON.parse(localStorage.getItem("cart"));
     cart.forEach(element => {
         if ((element.id == idItem) && (element.color == colorItem)) {
@@ -156,9 +160,18 @@ function totalQty() {
     return totalQuantity;
 };
 
-// function totalPrice(${ product.price }) {
+//---> Définition de la variable pour calculer le prix total du panier (en dehors du FETCH)
+var totalPriceCart = 0;
 
-// }
+//--->Fonction relative au calcul du prix total du panier
+function totalPrice(product, element) {
+    let totalPriceItem = parseInt(element.quantity) * parseInt(product.price);
+    totalPriceCart += totalPriceItem;
+
+    return totalPriceCart;
+};
+
+
 
 
 
