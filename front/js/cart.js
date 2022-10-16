@@ -18,7 +18,7 @@ cart.forEach(element => {
         });
 });
 
-//---> fonction relative à l'intégration HTML spécifique à chaque produit du panier
+//---> fonction relative à l'intégration HTML et à l'appel des fonctions de la page
 function displayProduct(product, element) {
 
     let articleProduct = document.createElement("article");
@@ -79,6 +79,7 @@ function displayProduct(product, element) {
     divContentSettQty.appendChild(inputQuantity);
     //---> Ecoute de l'évènement "change" dans l'input relatif aux quantités
     inputQuantity.addEventListener("change", event => {
+        //---> Limitation des valeurs dans l'input
         if ((event.target.value < 1) || (event.target.value > 100)) {
             alert('La quantité doit être comprise entre 1 et 100.');
             return;
@@ -103,6 +104,28 @@ function displayProduct(product, element) {
     document.getElementById("totalQuantity").innerHTML = totalQty();
 
     document.getElementById("totalPrice").innerHTML = totalPrice(product, element);
+
+
+    let form = document.querySelector('.cart__order__form');
+
+    form.firstName.addEventListener("change", function () {
+        validFirstName(this);
+    });
+
+    form.address.addEventListener("change", function () {
+        validAdress(this);
+    });
+
+    form.city.addEventListener("change", function () {
+        validCity(this);
+    });
+
+    form.email.addEventListener("change", function () {
+        validEmail(this);
+    });
+
+    // document.getElementById("order").addEventListener("click", )
+
 };
 
 
@@ -145,8 +168,6 @@ function deleteItem(event) {
         }
     });
 
-
-
     window.location.reload();
 };
 
@@ -169,6 +190,91 @@ function totalPrice(product, element) {
     totalPriceCart += totalPriceItem;
 
     return totalPriceCart;
+};
+
+//--->Repère sur le formulaire et ses sections, pour l'attribution des REGEX
+// var form = document.querySelector('.cart__order__form');
+// var firstName = form.firstName.value;
+// var lastName = form.lastName;
+// var address = form.address;
+// var city = form.city;
+// var email = form.email;
+
+
+
+// const regLastName = /[a-zA-z\-\s\è\é\à\ô]/;
+// const regAdress = /[0-9A-Za-z\s]/;
+// const regCity = /[a-zA-Z-]/;
+// let regEmail = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
+
+const validFirstName = function (inputFirstName) {
+    let regFirstName = new RegExp('[a-zA-Z]', 'g');
+    let testFirstName = regFirstName.test(inputFirstName.value);
+    console.log(testFirstName);
+
+    if (!testFirstName) {
+        document.getElementById("firstNameErrorMsg").textContent = "Veuillez entre un prénom valide."
+    } else {
+        window.location.reload();
+        return;
+    };
+
+};
+
+const validLastName = function (inputLastName) {
+    let regLastName = new RegExp('[a-zA-z\-\s\è\é\à\ô]', 'g');
+    let testLastName = regLastName.test(inputLastName.value);
+    console.log(testLastName);
+
+    if (!testLastName) {
+        document.getElementById("lastNameErrorMsg").textContent = "Veuillez entre un nom valide."
+    } else {
+        window.location.reload();
+        return;
+    };
+
+};
+
+const validAddress = function (inputAddress) {
+    let regAddress = new RegExp('[0-9A-Za-z\s]', 'g');
+    let testAddress = regAddress.test(inputAddress.value);
+    console.log(testAddress);
+
+    if (!testAddress) {
+        document.getElementById("adressErrorMsg").textContent = "Veuillez entre un nom valide."
+    } else {
+        window.location.reload();
+        return;
+    };
+
+};
+
+const validCity = function (inputCity) {
+    let regCity = new RegExp('[a-zA-Z-]', 'g');
+    let testCity = regCity.test(inputCity.value);
+    console.log(testCity);
+
+    if (!testCity) {
+        document.getElementById("cityErrorMsg").textContent = "Veuillez entre un nom valide."
+    } else {
+        window.location.reload();
+        return;
+    };
+
+};
+
+const validEmail = function (inputEmail) {
+    let regEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+    let testEmail = regEmail.test(inputEmail.value);
+    console.log(testEmail);
+
+    if (!testEmail) {
+        document.getElementById("emailErrorMsg").textContent = "Veuillez entre un nom valide."
+    } else {
+        window.location.reload();
+        return;
+    };
+
 };
 
 
