@@ -1,11 +1,12 @@
 //---> Récupération des données dans le local storage
 var cart = JSON.parse(localStorage.getItem("cart"));
-var getId = cart.map(product => product.id);
-
+console.log(cart);
+var getId = cart.map(element => element.id);
+console.log(getId);
 
 
 //---> GET de l'API de chaque produit contenu dans le panier par son ID
-//---> & appel de la fonction d'affichage des produits
+//---> & appel de la fonction d'affichage des produits, du calcul du prix total et du nbr d'articles
 cart.forEach(element => {
     fetch(`http://localhost:3000/api/products/${element.id}`)
         .then(function (res) {
@@ -21,7 +22,7 @@ cart.forEach(element => {
         });
 });
 
-//---> fonction relative à l'intégration HTML et à l'appel des fonctions de la page
+//---> Fonction relative à l'intégration HTML et à l'appel des fonctions de la page
 function displayProduct(product, element) {
 
     let articleProduct = document.createElement("article");
@@ -133,13 +134,16 @@ function deleteItem(event) {
     const clickToDel = event.target;
     const articleItemToDel = clickToDel.closest('article');
 
+    //---> Récupération de l'id et de la couleur à supprimer
     const idItemToDel = articleItemToDel.getAttribute("data-id");
     const colorItemToDel = articleItemToDel.getAttribute("data-color");
 
+    //---> Récupération du tableau "cart" correspondant aux articles dans le panier
     let cart = JSON.parse(localStorage.getItem("cart"));
     cart.forEach(element => {
-
+        //---> Si l'article cliqué a le même id ET la même couleur
         if ((element.id == idItemToDel) && (element.color == colorItemToDel)) {
+            //---> On supprime l'article sur l'index de l'élément qui correspond
             let index = cart.indexOf(element);
             cart.splice(index, 1);
             localStorage.setItem("cart", JSON.stringify(cart));
@@ -172,7 +176,7 @@ function totalPrice(product, element) {
 
 
 
-//--->Repère et écoute de "change" sur le formulaire et ses sections, pour l'attribution des REGEX
+//--->Repère et écoute de "change" sur le formulaire et ses sections, pour l'attribution des regExp
 var form = document.querySelector('.cart__order__form');
 
 
@@ -197,8 +201,7 @@ form.email.addEventListener("change", function () {
 });
 
 
-//--->Validation des inputs du formulaire par application de RegExp spécifiques
-var firstNameChecked = false;
+//---> Validation des inputs du formulaire par applications de RegExp spécifiques
 const validFirstName = function (inputFirstName) {
     var regFirstName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
     var testFirstName = regFirstName.test(form.firstName.value);
@@ -208,74 +211,65 @@ const validFirstName = function (inputFirstName) {
         document.getElementById("firstNameErrorMsg").textContent = "";
         return;
     };
-
 };
 
 const validLastName = function (inputLastName) {
     let regLastName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
     var testLastName = regLastName.test(inputLastName.value);
-
-
     if (!testLastName) {
         document.getElementById("lastNameErrorMsg").textContent = "Veuillez entrer un nom valide.";
     } else {
         document.getElementById("lastNameErrorMsg").textContent = "";
         return;
     };
-
 };
 
 const validAddress = function (inputAddress) {
     let regAddress = new RegExp('^[0-9A-Za-zÀ-ú,\-\\s]+$', 'g');
     var testAddress = regAddress.test(inputAddress.value);
-
-
     if (!testAddress) {
         document.getElementById("addressErrorMsg").textContent = "Veuillez entrer une adresse valide.";
     } else {
         document.getElementById("addressErrorMsg").textContent = "";
         return;
     };
-
 };
 
 const validCity = function (inputCity) {
     let regCity = new RegExp('^[A-Za-zÀ-ú\-\s]+$', 'g');
     var testCity = regCity.test(inputCity.value);
-
-
     if (!testCity) {
         document.getElementById("cityErrorMsg").textContent = "Veuillez inscrire votre ville de résidence.";
     } else {
         document.getElementById("cityErrorMsg").textContent = "";
         return;
     };
-
 };
 
 const validEmail = function (inputEmail) {
     let regEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
     var testEmail = regEmail.test(inputEmail.value);
-
-
     if (!testEmail) {
         document.getElementById("emailErrorMsg").textContent = "Veuillez entrer une adresse email valide.";
     } else {
         document.getElementById("emailErrorMsg").textContent = "";
         return;
     };
-
-}
-
+};
 
 
+
+//---> Ecoute sur l'event click pour confirmer le formulaire de contact & la commande 
 document.getElementById("order").addEventListener("click", event => {
     event.preventDefault();
     confirmOrder();
 });
 
+//---> Function de confirmation de commande
 const confirmOrder = function () {
+    //---> Condition de formulaire validé par les regExp
     if (validFirstName && validLastName && validAddress && validCity && validEmail) {
+        //---> Création de l'objet formulaire de contact
         const completedForm = {
             contact: {
                 firstName: form.firstName.value,
@@ -286,6 +280,7 @@ const confirmOrder = function () {
             },
             products: getId
         };
+        //---> Requête API par envoi de l'objet formulaire de contact
         const resultApi = fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             headers: {
@@ -294,31 +289,21 @@ const confirmOrder = function () {
             },
             body: JSON.stringify(completedForm)
         })
+            //---> Récupération de la réponse contenant le n° de commande
             .then((response) => {
                 if (response.ok) {
-                    alert("Votre commande est confirmée.");
-                    const data = answer.json();
-                    window.location.href = `confirmation.html?id=${data.orderId}`;
-                    localStorage.clear();
+                    return response.json();
                 }
             })
+            //---> Suppression du panier, et redirection vers la page de confirmation
+            .then(function (data) {
+                localStorage.removeItem("cart");
+                window.location.href = `confirmation.html?id=${data.orderId}`;
+            })
             .catch(function (error) {
-                console.log('Request failed', error);
+                console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
             })
     }
 };
 
 
-/**
- *
- * Expects request to contain:
- * contact: {
- *   firstName: string,
- *   lastName: string,
- *   address: string,
- *   city: string,
- *   email: string
- * }
- * products: [string] <-- array of product _id
- *
- */
