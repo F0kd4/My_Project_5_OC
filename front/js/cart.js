@@ -1,5 +1,6 @@
 //---> Récupération des données dans le local storage
-let cart = JSON.parse(localStorage.getItem("cart"));
+var cart = JSON.parse(localStorage.getItem("cart"));
+var getId = cart.map(product => product.id);
 
 
 
@@ -12,6 +13,8 @@ cart.forEach(element => {
         })
         .then(function (product) {
             displayProduct(product, element);
+            document.getElementById("totalQuantity").innerHTML = totalQty();
+            document.getElementById("totalPrice").innerHTML = totalPrice(product, element);
         })
         .catch(function (error) {
             console.log('Il y a eu un problème avec l\'opération fetch: ' + error.message);
@@ -83,9 +86,8 @@ function displayProduct(product, element) {
         if ((event.target.value < 1) || (event.target.value > 100)) {
             alert('La quantité doit être comprise entre 1 et 100.');
             return;
-        } else {
-            changeQty(event);
         }
+        changeQty(event);
     });
 
     let divContentSettDel = document.createElement("div");
@@ -101,30 +103,6 @@ function displayProduct(product, element) {
         deleteItem(event);
     });
 
-    document.getElementById("totalQuantity").innerHTML = totalQty();
-
-    document.getElementById("totalPrice").innerHTML = totalPrice(product, element);
-
-
-    let form = document.querySelector('.cart__order__form');
-
-    form.firstName.addEventListener("change", function () {
-        validFirstName(this);
-    });
-
-    form.address.addEventListener("change", function () {
-        validAdress(this);
-    });
-
-    form.city.addEventListener("change", function () {
-        validCity(this);
-    });
-
-    form.email.addEventListener("change", function () {
-        validEmail(this);
-    });
-
-    // document.getElementById("order").addEventListener("click", )
 
 };
 
@@ -192,72 +170,84 @@ function totalPrice(product, element) {
     return totalPriceCart;
 };
 
-//--->Repère sur le formulaire et ses sections, pour l'attribution des REGEX
-// var form = document.querySelector('.cart__order__form');
-// var firstName = form.firstName.value;
-// var lastName = form.lastName;
-// var address = form.address;
-// var city = form.city;
-// var email = form.email;
 
 
+//--->Repère et écoute de "change" sur le formulaire et ses sections, pour l'attribution des REGEX
+var form = document.querySelector('.cart__order__form');
 
-// const regLastName = /[a-zA-z\-\s\è\é\à\ô]/;
-// const regAdress = /[0-9A-Za-z\s]/;
-// const regCity = /[a-zA-Z-]/;
-// let regEmail = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$/;
 
+form.firstName.addEventListener("change", function () {
+    validFirstName(this);
+});
+
+form.lastName.addEventListener("change", function () {
+    validLastName(this);
+});
+
+form.address.addEventListener("change", function () {
+    validAddress(this);
+});
+
+form.city.addEventListener("change", function () {
+    validCity(this);
+});
+
+form.email.addEventListener("change", function () {
+    validEmail(this);
+});
+
+
+//--->Validation des inputs du formulaire par application de RegExp spécifiques
+var firstNameChecked = false;
 const validFirstName = function (inputFirstName) {
-    let regFirstName = new RegExp('[a-zA-Z]', 'g');
-    let testFirstName = regFirstName.test(inputFirstName.value);
-    console.log(testFirstName);
-
+    var regFirstName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
+    var testFirstName = regFirstName.test(form.firstName.value);
     if (!testFirstName) {
-        document.getElementById("firstNameErrorMsg").textContent = "Veuillez entre un prénom valide."
+        document.getElementById("firstNameErrorMsg").textContent = "Veuillez entrer un prénom valide.";
     } else {
-        window.location.reload();
+        document.getElementById("firstNameErrorMsg").textContent = "";
         return;
     };
 
 };
 
 const validLastName = function (inputLastName) {
-    let regLastName = new RegExp('[a-zA-z\-\s\è\é\à\ô]', 'g');
-    let testLastName = regLastName.test(inputLastName.value);
-    console.log(testLastName);
+    let regLastName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
+    var testLastName = regLastName.test(inputLastName.value);
+
 
     if (!testLastName) {
-        document.getElementById("lastNameErrorMsg").textContent = "Veuillez entre un nom valide."
+        document.getElementById("lastNameErrorMsg").textContent = "Veuillez entrer un nom valide.";
     } else {
-        window.location.reload();
+        document.getElementById("lastNameErrorMsg").textContent = "";
         return;
     };
 
 };
 
 const validAddress = function (inputAddress) {
-    let regAddress = new RegExp('[0-9A-Za-z\s]', 'g');
-    let testAddress = regAddress.test(inputAddress.value);
-    console.log(testAddress);
+    let regAddress = new RegExp('^[0-9A-Za-zÀ-ú,\-\\s]+$', 'g');
+    var testAddress = regAddress.test(inputAddress.value);
+
 
     if (!testAddress) {
-        document.getElementById("adressErrorMsg").textContent = "Veuillez entre un nom valide."
+        document.getElementById("addressErrorMsg").textContent = "Veuillez entrer une adresse valide.";
     } else {
-        window.location.reload();
+        document.getElementById("addressErrorMsg").textContent = "";
         return;
     };
 
 };
 
 const validCity = function (inputCity) {
-    let regCity = new RegExp('[a-zA-Z-]', 'g');
-    let testCity = regCity.test(inputCity.value);
-    console.log(testCity);
+    let regCity = new RegExp('^[A-Za-zÀ-ú\-\s]+$', 'g');
+    var testCity = regCity.test(inputCity.value);
+
 
     if (!testCity) {
-        document.getElementById("cityErrorMsg").textContent = "Veuillez entre un nom valide."
+        document.getElementById("cityErrorMsg").textContent = "Veuillez inscrire votre ville de résidence.";
     } else {
-        window.location.reload();
+        document.getElementById("cityErrorMsg").textContent = "";
         return;
     };
 
@@ -265,21 +255,70 @@ const validCity = function (inputCity) {
 
 const validEmail = function (inputEmail) {
     let regEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
-    let testEmail = regEmail.test(inputEmail.value);
-    console.log(testEmail);
+    var testEmail = regEmail.test(inputEmail.value);
+
 
     if (!testEmail) {
-        document.getElementById("emailErrorMsg").textContent = "Veuillez entre un nom valide."
+        document.getElementById("emailErrorMsg").textContent = "Veuillez entrer une adresse email valide.";
     } else {
-        window.location.reload();
+        document.getElementById("emailErrorMsg").textContent = "";
         return;
     };
 
+}
+
+
+
+document.getElementById("order").addEventListener("click", event => {
+    event.preventDefault();
+    confirmOrder();
+});
+
+const confirmOrder = function () {
+    if (validFirstName && validLastName && validAddress && validCity && validEmail) {
+        const completedForm = {
+            contact: {
+                firstName: form.firstName.value,
+                lastName: form.lastName.value,
+                address: form.address.value,
+                city: form.city.value,
+                email: form.email.value
+            },
+            products: getId
+        };
+        const resultApi = fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(completedForm)
+        })
+            .then((response) => {
+                if (response.ok) {
+                    alert("Votre commande est confirmée.");
+                    const data = answer.json();
+                    window.location.href = `confirmation.html?id=${data.orderId}`;
+                    localStorage.clear();
+                }
+            })
+            .catch(function (error) {
+                console.log('Request failed', error);
+            })
+    }
 };
 
 
-
-
-
-
-
+/**
+ *
+ * Expects request to contain:
+ * contact: {
+ *   firstName: string,
+ *   lastName: string,
+ *   address: string,
+ *   city: string,
+ *   email: string
+ * }
+ * products: [string] <-- array of product _id
+ *
+ */
