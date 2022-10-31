@@ -77,18 +77,22 @@ addToCartBtn.addEventListener("click", () => {
             if ((element.id == productObject.id) && (element.color == productObject.color)) {
                 element.quantity = element.quantity + productObject.quantity;
                 modifiedQty = true;
+                alert('Votre sélection a été ajoutée au panier!');
             }
         })
+
 
         //---> Si il n'y a pas de quantité à modifier, push du nouvel item
         if (!modifiedQty) {
             itemsInCart.push(productObject);
+            alert('Votre sélection a été ajoutée au panier!');
         };
 
         //---> Le panier n'existe pas : création d'un array pour le stocker    
     } else {
         itemsInCart = [];
         itemsInCart.push(productObject);
+        alert('Votre sélection a été ajoutée au panier!');
     };
 
     //---> Sauvegarde du panier dans le local storage
