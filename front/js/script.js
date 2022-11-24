@@ -15,13 +15,27 @@ fetch("http://localhost:3000/api/products")
 //---> Fonction spécifique à l'affichage des produits
 function displayItems(products) {
     for (let product of products) {
-        document.getElementById("items").innerHTML += `
-        <a href="./product.html?id=${product._id}">
-            <article>
-              <img src="${product.imageUrl}" alt="${product.altTxt}">
-              <h3 class="productName">${product.name}</h3>
-              <p class="productDescription">${product.description}</p>
-            </article>
-          </a>`;
+        let linkProduct = document.createElement('a');
+        linkProduct.setAttribute('href', `./product.html?id=${product._id}`);
+        document.getElementById("items").appendChild(linkProduct);
+
+        let articleProduct = document.createElement('article');
+        linkProduct.appendChild(articleProduct);
+
+
+        let imgProduct = document.createElement('img');
+        imgProduct.setAttribute('src', product.imageUrl);
+        imgProduct.setAttribute('alt', product.altTxt);
+        articleProduct.appendChild(imgProduct);
+
+        let h3Product = document.createElement('h3');
+        h3Product.setAttribute('class', "productName");
+        articleProduct.appendChild(h3Product);
+        h3Product.textContent = `${product.name}`;
+
+        let pProduct = document.createElement('p');
+        pProduct.setAttribute('class', 'productDescription');
+        articleProduct.appendChild(pProduct);
+        pProduct.textContent = `${product.description}`;
     }
 }

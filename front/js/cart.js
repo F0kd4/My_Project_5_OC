@@ -1,8 +1,8 @@
 //---> Récupération des données dans le local storage
 var cart = JSON.parse(localStorage.getItem("cart"));
-console.log(cart);
 var getId = cart.map(element => element.id);
-console.log(getId);
+
+
 
 
 //---> GET de l'API de chaque produit contenu dans le panier par son ID
@@ -119,7 +119,7 @@ function changeQty(event) {
     let cart = JSON.parse(localStorage.getItem("cart"));
     cart.forEach(element => {
         if ((element.id == idItem) && (element.color == colorItem)) {
-            element.quantity = newValue;
+            element.quantity = parseInt(newValue);
         }
     });
 
@@ -201,8 +201,8 @@ form.email.addEventListener("change", function () {
 });
 
 
-//---> Validation des inputs du formulaire par applications de RegExp spécifiques
-const validFirstName = function (inputFirstName) {
+//---> Validation de l'input prénom du formulaire
+function validFirstName(inputFirstName) {
     var regFirstName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
     var testFirstName = regFirstName.test(form.firstName.value);
     if (!testFirstName) {
@@ -213,7 +213,9 @@ const validFirstName = function (inputFirstName) {
     };
 };
 
-const validLastName = function (inputLastName) {
+
+//---> Validation de l'input nom du formulaire
+function validLastName(inputLastName) {
     let regLastName = new RegExp('^[A-Za-zÀ-ú\-\\s]{1,20}$', 'g');
     var testLastName = regLastName.test(inputLastName.value);
     if (!testLastName) {
@@ -224,7 +226,9 @@ const validLastName = function (inputLastName) {
     };
 };
 
-const validAddress = function (inputAddress) {
+
+//---> Validation de l'input adresse du formulaire
+function validAddress(inputAddress) {
     let regAddress = new RegExp('^[0-9A-Za-zÀ-ú,\-\\s]+$', 'g');
     var testAddress = regAddress.test(inputAddress.value);
     if (!testAddress) {
@@ -235,7 +239,9 @@ const validAddress = function (inputAddress) {
     };
 };
 
-const validCity = function (inputCity) {
+
+//---> Validation de l'input ville du formulaire
+function validCity(inputCity) {
     let regCity = new RegExp('^[A-Za-zÀ-ú\-\s]+$', 'g');
     var testCity = regCity.test(inputCity.value);
     if (!testCity) {
@@ -246,7 +252,9 @@ const validCity = function (inputCity) {
     };
 };
 
-const validEmail = function (inputEmail) {
+
+//---> Validation de l'input email du formulaire
+function validEmail(inputEmail) {
     let regEmail = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
     var testEmail = regEmail.test(inputEmail.value);
     if (!testEmail) {
@@ -305,5 +313,7 @@ const confirmOrder = function () {
             })
     }
 };
+
+
 
 
