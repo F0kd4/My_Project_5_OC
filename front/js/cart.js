@@ -4,7 +4,6 @@ var getId = cart.map(element => element.id);
 
 
 
-
 //---> GET de l'API de chaque produit contenu dans le panier par son ID
 //---> & appel de la fonction d'affichage des produits, du calcul du prix total et du nbr d'articles
 cart.forEach(element => {
@@ -207,9 +206,10 @@ function validFirstName(inputFirstName) {
     var testFirstName = regFirstName.test(form.firstName.value);
     if (!testFirstName) {
         document.getElementById("firstNameErrorMsg").textContent = "Veuillez entrer un prénom valide.";
+        return false;
     } else {
         document.getElementById("firstNameErrorMsg").textContent = "";
-        return;
+        return true;
     };
 };
 
@@ -220,9 +220,10 @@ function validLastName(inputLastName) {
     var testLastName = regLastName.test(inputLastName.value);
     if (!testLastName) {
         document.getElementById("lastNameErrorMsg").textContent = "Veuillez entrer un nom valide.";
+        return false;
     } else {
         document.getElementById("lastNameErrorMsg").textContent = "";
-        return;
+        return true;
     };
 };
 
@@ -233,9 +234,10 @@ function validAddress(inputAddress) {
     var testAddress = regAddress.test(inputAddress.value);
     if (!testAddress) {
         document.getElementById("addressErrorMsg").textContent = "Veuillez entrer une adresse valide.";
+        return false;
     } else {
         document.getElementById("addressErrorMsg").textContent = "";
-        return;
+        return true;
     };
 };
 
@@ -246,9 +248,10 @@ function validCity(inputCity) {
     var testCity = regCity.test(inputCity.value);
     if (!testCity) {
         document.getElementById("cityErrorMsg").textContent = "Veuillez inscrire votre ville de résidence.";
+        return false;
     } else {
         document.getElementById("cityErrorMsg").textContent = "";
-        return;
+        return true;
     };
 };
 
@@ -259,9 +262,10 @@ function validEmail(inputEmail) {
     var testEmail = regEmail.test(inputEmail.value);
     if (!testEmail) {
         document.getElementById("emailErrorMsg").textContent = "Veuillez entrer une adresse email valide.";
+        return false;
     } else {
         document.getElementById("emailErrorMsg").textContent = "";
-        return;
+        return true;
     };
 };
 
@@ -270,13 +274,17 @@ function validEmail(inputEmail) {
 //---> Ecoute sur l'event click pour confirmer le formulaire de contact & la commande 
 document.getElementById("order").addEventListener("click", event => {
     event.preventDefault();
+    console.log(validEmail);
+    console.log(validCity);
+    console.log(validAddress);
     confirmOrder();
 });
 
 //---> Function de confirmation de commande
 const confirmOrder = function () {
+
     //---> Condition de formulaire validé par les regExp
-    if (validFirstName && validLastName && validAddress && validCity && validEmail) {
+    if (validFirstName(form.firstName) && validLastName(form.lastName) && validAddress(form.address) && validCity(form.city) && validEmail(form.email)) {
         //---> Création de l'objet formulaire de contact
         const completedForm = {
             contact: {

@@ -79,7 +79,6 @@ addToCartBtn.addEventListener("click", () => {
                 element.quantity = element.quantity + productObject.quantity;
                 modifiedQty = true;
                 alert('Votre sélection a été ajoutée au panier!');
-                window.location.href = `index.html`;
             }
         })
 
@@ -88,7 +87,6 @@ addToCartBtn.addEventListener("click", () => {
         if (!modifiedQty) {
             itemsInCart.push(productObject);
             alert('Votre sélection a été ajoutée au panier!');
-            window.location.href = `index.html`;
         };
 
         //---> Le panier n'existe pas : création d'un array pour le stocker    
@@ -96,9 +94,7 @@ addToCartBtn.addEventListener("click", () => {
         itemsInCart = [];
         itemsInCart.push(productObject);
         alert('Votre sélection a été ajoutée au panier!');
-        window.location.href = `index.html`;
     };
-
 
     //---> Sauvegarde du panier dans le local storage
     localStorage.setItem("cart", JSON.stringify(itemsInCart));
@@ -107,12 +103,3 @@ addToCartBtn.addEventListener("click", () => {
 });
 
 
-// function sortItems(tableauObjets) {
-//     tableauObjets.sort(function compare(a, b) {
-//         if (a.id < b.id)
-//             return -1;
-//         if (a.id > b.id)
-//             return 1;
-//         return 0;
-//     });
-// };
